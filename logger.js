@@ -40,6 +40,7 @@
     
     var loggers = {};
     var globalLevel;
+    var globalTimeStamp = false;
     var enabled = true;
     
     function addHooks() {
@@ -86,6 +87,7 @@
     var timeStamp = (function () {
 	var bootstart = new Date();
 	return function () { return new Date() - bootstart;};})();
+    
     var levels = ['none', 'error', 'warn', 'info', 'debug'];
         
     function print(name, level, args) {
@@ -93,7 +95,7 @@
         args = Array.prototype.slice.call(args);
         var out = [];
         var post = '(';
-        if (loggers[name].showTimeStamp) post += '[' + timeStamp() + ']';
+        if (globalTimeStamp || loggers[name].timeStamp) post += '[' + timeStamp() + ']';
         post += name +  __line + ')';
         out = out.concat(args);
         out.push(post);
@@ -128,14 +130,14 @@
             },
             d: function() {
                 print(name,4,arguments);   
-            },
+            },  
             setLevel: function(level) { setLevel(name, level); },
-            showTimeStamp: function() { loggers[name].showTimeStamp = true; }, 
-            hideTimeStamp: function() { loggers[name].showTimeStamp = false; }
+            showTimeStamp: function() { loggers[name].timeStamp = true; }, 
+            hideTimeStamp: function() { loggers[name].timeStamp = false; }
         };
         if (!level || typeof level !== 'string') loggers[name].level = globalLevel;
         else setLevel(name, level);
-        loggers[name].showTimeStamp = showTimeStampVar;
+        loggers[name].timeStamp = showTimeStampVar;
         return loggers[name];
     }
         
@@ -154,6 +156,8 @@
     addHooks();
         
     getLogger.setLevel = setGlobalLevel;
+    getLogger.showTimeStamp = function() { globalTimeStamp = true; };
+    getLogger.hideTimeStamp = function() { globalTimeStamp = false; };
     getLogger.disable = removeHooks;
     getLogger.enable = addHooks;
     global[globalHook] = getLogger;
