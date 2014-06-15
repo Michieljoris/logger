@@ -26,9 +26,9 @@
             get: function(){
                 var origin = __stack[3];
                 var name = '';
-                if (origin.fun) {
-                    name = origin.fun.name + '|';
-                }
+                // if (origin.fun) {
+                //     name = origin.fun.name + '|';
+                // }
                 return name + origin.getLineNumber();
             },
             configurable: true
@@ -72,9 +72,10 @@
         var maxLevel = getMaxLevel(name);
         maxLevel = levels.indexOf(maxLevel);
         if (!maxLevel) return;
+        var funName = args.callee.caller.name;
         args = Array.prototype.slice.call(args);
         var timeStampStr =  loggers._showTimeStamp ? '(' + timeStamp() + ')' : '';
-        var out = ['%c' + timeStampStr + name + __line + '>', 'color:grey;'];
+        var out = ['%c' + timeStampStr + name +  funName + ':' + __line + '>', 'color:grey;'];
         out = out.concat(args);
         var post = '';
         out.push(post);
