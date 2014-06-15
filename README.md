@@ -12,7 +12,7 @@ Load the script with:
 A new global is created named logger, this can be changed, see top of source
 file.
 
-Turn the logger on for your browser tab:
+Turn the logger on for your browser:
 
 	logger._on();
 	
@@ -88,7 +88,7 @@ Every logger prints out its name before any output:
 And the line number (108) the log call was made.	
 
 The time stamp (3m) is from when the script was first loaded, except when calls are
-in quick succession (within 2 seconds), then the time stap is relative to the first of the batch
+in quick succession (within 2 seconds), then the time stamp is relative to the first of the batch
 (eg: +5ms).
 
 You can namespace further like this:
@@ -139,8 +139,8 @@ https://github.com/douglascrockford/JSDev
 console.debug, console.warn, console.info and
 console.error are used under the covers.
 
-TODO: detect console object, fail gracefully
-TODO: pass through other console properties
-TODO: maybe store messages to output somewhere else
-TODO: implement custom colors and format string
-TODO: find function name where log call occurred!! Not working anymore.
+* TODO: detect console object, fail gracefully
+* TODO: pass through other console properties
+* TODO: maybe store messages to output somewhere else
+* TODO: implement custom colors and format string
+* TODO: find function name where log call occurred!! Not working anymore.

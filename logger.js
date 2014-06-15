@@ -1,36 +1,4 @@
 (function(global) {
-    //A little logging utility.
-    //Load the script with:
-    // <script src=pathto/logger.js></script>
-    //A new global is created named logger.
-    //Make a new logger with:
-    //var log = logger('nameOfLogger', level, showTimeStamp )
-    //these optional parameters default to 'logger', defaultGlobalLevel and false.
-    //The object returned has the following function properties:
-    //e, w, i, d for error, warn, info and debug
-    //setLevel to set the level for this particular logger
-    //showTimeStamp and hideTimeStamp
-    //logger.setLevel sets the level for all debuggers, overriding their individual levels.
-    //logger.enable and logger.disable will make all loggers non-functional, in effect turning this
-    //script into a dummy script, doing nothing bbbut returning its logging calls.
-    //to completely remove all log statements from the script, maybe use Douglas Crockford's JSDev
-    //https://github.com/douglascrockford/JSDev
-
-    //The logger will add to every printout to the console the
-    //logger's name, the function it was called from, the line number
-    //and optionally a timestamp. The same logger object can be
-    //retrieved as many times as you like by calling logger with the
-    //same name. Set the level of individual loggers anywhere in your
-    //app, and/or use the same logger in multiple places.  All
-    //printouts will go to the standard javascript
-    //console. console.debug, console.warn, console.info and
-    //console.error are used under the covers.
-
-    //TODO: detect console object, fail gracefully
-    //TODO: pass through other console properties
-    //TODO: maybe store messages to output somewhere else
-    //TODO: implement colors
-    //TODO: find function name where log occurred!! Not working anymore
     //-------------------------------------------------------------------------------
     var globalHook = 'logger';
     var defaultGlobalLevel = 'debug';
@@ -38,14 +6,7 @@
 
     var globalLevel;
     var enabled = localStorage.getItem('loggerEnabled');
-    var colors = [
-        'lightseagreen',
-        'forestgreen',
-        'goldenrod',
-        'dodgerblue',
-        'darkorchid',
-        'crimson'
-    ];
+    
     function addHooks() {
         enabled = true;
         Object.defineProperty(window, '__stack', {
@@ -113,13 +74,10 @@
         if (!maxLevel) return;
         args = Array.prototype.slice.call(args);
         var timeStampStr =  loggers._showTimeStamp ? '(' + timeStamp() + ')' : '';
-        // name = name ? name + ':' : '';
         var out = ['%c' + timeStampStr + name + __line + '>', 'color:grey;'];
         out = out.concat(args);
         var post = '';
-        // post +=  __line + ')';
         out.push(post);
-        // if (level <= globalLevel && level <= loggers[name].level)
         if (level <= globalLevel && level <= maxLevel)
             console[levels[level]].apply(console, out);
     }
@@ -137,7 +95,6 @@
     function getLogger(ns, names) {
         var name = ns;
         var logger = loggers[name] || (loggers[name] = getLoggerSingle(name || ''));   
-        // if (names && names.length){
         logger._all = {
             disable: function() {
                 logger._disable();
@@ -199,14 +156,13 @@
         }
     }
 
+
+    //executed on load:
     setGlobalLevel(defaultGlobalLevel);
     if (enabled) addHooks();
-
-    
     
     var loggers = {};
     loggers = getLogger();
-    
     loggers._setGlobalLevel = setGlobalLevel;
     loggers._off = function() {
         this._state = 'off';
@@ -221,7 +177,6 @@
         console.log('Please refresh the page.');
     }
     loggers._state = enabled ? 'on' : 'off';
-    
     loggers._create = getLogger;
     loggers._showTimeStamp = true;
     loggers._enum = function() {
@@ -233,7 +188,6 @@
                         }));
         })
     }
-    // global[globalHook] = getLogger;
     global[globalHook] = loggers;
 
 
@@ -334,6 +288,16 @@
         if (ms < n * 1.5) return Math.floor(ms / n) + ' ' + name;
         return Math.ceil(ms / n) + ' ' + name + 's';
     }
+    
+    //TODO colors:
+    var colors = [
+        'lightseagreen',
+        'forestgreen',
+        'goldenrod',
+        'dodgerblue',
+        'darkorchid',
+        'crimson'
+    ];
 
     function useColors() {
         // is webkit? http://stackoverflow.com/a/16459606/376773
