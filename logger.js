@@ -72,12 +72,13 @@
         var maxLevel = getMaxLevel(name);
         maxLevel = levels.indexOf(maxLevel);
         if (!maxLevel) return;
-        var funName = args.callee.caller.name;
+        var funName = args.callee.caller.name || 'anon';
         args = Array.prototype.slice.call(args);
         var timeStampStr =  loggers._showTimeStamp ? '(' + timeStamp() + ')' : '';
-        var out = ['%c' + timeStampStr + name +  funName + ':' + __line + '>', 'color:grey;'];
+        name = name ? name + ' ' : '';
+        var out = ['%c' + name +  funName + ':' + __line + '>', 'color:grey;'];
         out = out.concat(args);
-        var post = '';
+        var post = '' + timeStampStr ;
         out.push(post);
         if (level <= globalLevel && level <= maxLevel)
             console[levels[level]].apply(console, out);
