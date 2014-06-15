@@ -115,14 +115,15 @@
             });
         }
         return logger;
-
     }
     
     function disable() { this._setLevel('none'); };
+    
     function enable() {
         this._setLevel(levels[globalLevel]);
         loggers._on();
     };
+    
     function list() {
         return Object.keys(this).filter(function(k) {
             return k.indexOf('_') !== 0;     
