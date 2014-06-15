@@ -143,3 +143,4 @@ console.error are used under the covers.
 * TODO: pass through other console properties
 * TODO: maybe store messages to output somewhere else
 * TODO: implement custom colors and format string
+* TODO: make node version
