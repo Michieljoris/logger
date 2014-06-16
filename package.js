@@ -40,8 +40,8 @@ module.exports = {
     "homepage": "https://github.com/michieljoris/logthis",
     // An array of keywords used to describe this package to search engines,
     // mainly for people searching within the npm universe.
-    "keywords": [
-        
+    "keywords": [ 
+        "debug", "log", "debugger", "logger"
     ],
     // Where is the source of truth for this code, and what type of repo is it?
     "repository": {

@@ -2,7 +2,12 @@
   "name": "logthis",
   "description": "",
   "homepage": "https://github.com/michieljoris/logthis",
-  "keywords": [],
+  "keywords": [
+    "debug",
+    "log",
+    "debugger",
+    "logger"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/michieljoris/logthis.git"
@@ -33,5 +38,5 @@
   "scripts": {
     "docs": "node node_modules/.bin/docco src/logthis.js"
   },
-  "version": "0.1.4"
+  "version": "0.1.5"
 }

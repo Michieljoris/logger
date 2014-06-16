@@ -1,5 +1,4 @@
-Logthis
-------------
+##Logthis
 
 A little namespaced logging utility for node and the browser.
 
@@ -35,7 +34,7 @@ Turn logthis on for your browser:
 
 	logthis._on();
 	
-The state of the logthis gets persisted in localStorage, turn logthis off with:
+The state of logthis gets persisted in localStorage, turn logthis off with:
 
 	logthis._off();
 	
