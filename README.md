@@ -1,52 +1,59 @@
-Logger
+Logthis
 ------------
 
-A little namespaced logging utility.
+A little namespaced logging utility for node and the browser.
 
-The state of loggers gets persisted in localStorage.
+In the browser the state of loggers gets persisted in localStorage.
+
+In node the state of loggers is passed in as a config json (or use a nodejs repl
+perhaps?)
 
 Load the script with:
 
-     <script src=pathto/logger.js></script>
+     <script src=pathto/logthis.js></script>
 	 
-A new global is created named logger, this can be changed, see top of source
+Or on node:
+
+	npm install logthis
+	
+In the browser a new global is created named logthis, this can be changed, see top of source
 file.
 
-Turn the logger on for your browser:
+Turn logthis on for your browser:
 
-	logger._on();
+	logthis._on();
 	
-The state of the logger gets persisted in localStorage, turn the logger off with:
+The state of the logthis gets persisted in localStorage, turn logthis off with:
 
-	logger._off();
+	logthis._off();
 	
 Check the state with:
 
-	logger._state; //on or off
+	logthis._state; //on or off
 	
 When turned off all log calls in your source code are just noop calls (`function() {}`).
 
-Turning the logger on or off requires a refresh of the browser to have any effect.
+Turning logthis on or off requires a refresh of the browser to have any effect.
 
-When turned on, `logger` itself is a logger already, however it starts of as
-disabled as any logger created with `logger`. Enable it:
+When turned on, `logthis` itself is a logger already, however it starts of as
+disabled as any logger created with `logthis`. Enable it:
 
-	logger._enable();
+	logthis._enable();
 	
 Then use it as a default logger:
 
-	logger('Hello');// same as console.log
+	logthis('Hello');// same as console.log
 	
 Or use a log level:
 
-	logger._e('error'); //printed with stack trace
-	logger._w('warning); //printed with alarm icon
-	logger._i('info); //printed with info icon
-	logger._d('debug); //standard console.log
+	logthis._e('error'); //printed with stack trace
+	logthis._w('warning); //printed with alarm icon on the browser
+	logthis._i('info); //printed with info icon on the browser
+	logthis._d('debug); //standard console.log
 	
 Set the loglevel for this logger:
 
-	logger._setLevel('warning'); //only warning and errors are printed
+	logthis._setLevel('warning'); //only warning and errors are printed
 	
 Levels can be `debug`, `info`, `warning`, `error` or `none`.
 	
@@ -60,30 +67,30 @@ however then it's a bit cumbersome to disable all the loggers off again.
 
 By default loggers print out a timestamp, disable the timestamp with:
 
-	logger._showTimeStamp = false;//does not get persisted in localStorage
+	logthis._showTimeStamp = false;//set in source file to persist
 	
 Or disable the logger alltogether:
 
-	logger._disable(); //in effect setting a 'none' error level.
+	logthis._disable(); //in effect setting a 'none' error level.
 	
 Make a new logger with:
 
-    var log = logger._create('nameOfLogger'); 
+    var log = logthis._create('nameOflogthis'); 
 	
 If you create a logger with the same name, you get the same logger again.
 
 This logger `log` has the same methods as described above for he default logger,
-and can be enabled and disabled separately from any other logger.
+and can be enabled and disabled separately from any other loggers.
 
-Turn on the logger in the browser console with:
+Enable a name spaced logger with:
 
-	logger['nameOfLogger']._enable();
+	logthis['nameOflogthis']._enable();
 	
 Every logger prints out its name before any output:
 
 	log('And this is the log message.');
 
-	--> (3m)nameOfLogger:108>And this is the log message.
+	--> (3m)nameOflogthis:108>And this is the log message.
 	
 And the line number (108) the log call was made.	
 
@@ -93,15 +100,15 @@ in quick succession (within 2 seconds), then the time stamp is relative to the f
 
 You can namespace further like this:
 
-	var anotherLogger = logger('nameOfLogger', ['foo']);
+	var anotherLogger = logthis('nameOfLogger', ['foo']);
 	
 Enable it in the browser:
 	
-	anotherLogger.foo._enable();
+	anotherlogthis.foo._enable();
 	
 Use the logger:
 
-	anotherLogger.foo('hello!');
+	anotherlogthis.foo('hello!');
 	
 Use this for example to quickly create a logger for some functions, turn the
 logger off when you're done, but leave the log calls in place, in case they are
@@ -109,38 +116,66 @@ useful again later.
 
 Enumerate all loggers:
 
-	logger._enum();
+	logthis._enum();
 	
 	--> default (debug) 
-	--> nameOfTheLogger (debug) ["foo (debug)"] 
+	--> nameOfThelogthis (debug) ["foo (debug)"] 
 	
 Disable or enable all loggers under a namespace:
 
-	logger['anotherLogger']._all.enable();
-	logger['anotherLogger']._all.disable();
+	logthis['anotherlogthis']._all.enable();
+	Logger['anotherlogthis']._all.disable();
 	
-This also works for the default logger:
+This also works for the default logthis:
 
-	logger._all.enable();
-	logger._all.disable();
+	logthis._all.enable();
+	logthis._all.disable();
 	
 However this does only affect the top level loggers.	
 
 Set the minimum global logging level for all loggers:
 
-	logger.setGlobalLevel('warning); //not persisted
+	logthis.setGlobalLevel('warning); //add to source file to persist
 	
 This sets the minimum levels of all loggers. In this case for example no info or
 debug statements will be printed.
+
+Example for use on node:
+
+	var path = require('path');
+	require('logthis').config({ _on: true, 'test.js': 'debug' ,'test.js[foo]': 'debug'});
+
+	var logthis = require('./logthis').logger;
+
+	var log = logthis._create(path.basename(__filename));
+	var log2 = logthis._create('some_namespace));
+	var log3 = logthis._create(path.basename(__filename), ['foo']);
+
+	log('hello');
+	log2('hello from log2');
+	log3.foo('hello from foo');
+
+Output:
+
+	test.js anon():11> hello (+13ms)
+	someNamespace anon():12> hello from log2 (+3ms)
+	test.js[foo] anon():13> hello from foo (+1ms)
+
+	Process test.js finished
 
 To completely remove all log statements from a script, maybe use Douglas Crockford's JSDev
 https://github.com/douglascrockford/JSDev
 
 console.debug, console.warn, console.info and
-console.error are used under the covers.
+console.error are used under the covers in the browser.
 
-* TODO: detect console object, fail gracefully
-* TODO: pass through other console properties
-* TODO: maybe store messages to output somewhere else
-* TODO: implement custom colors and format string
-* TODO: make node version
+TODO:
+
+*  detect console object, fail gracefully
+*  pass through other console properties
+*  maybe store messages to output somewhere else
+   maybe send to a logserver?
+*  implement custom colors and format string
+*  maybe use a node repl?
+* use only _create to make new loggers, not as an second array option, so add
+   _create to namespaced loggers as well.

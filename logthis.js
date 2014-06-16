@@ -1,14 +1,42 @@
 (function(global) {
+    //for nodejs
+    var settings;
+    var inNode =  typeof module !== 'undefined' && typeof module.exports !== 'undefined';
+    
+    if (inNode) {
+        require('colors');   
+        var util = require('util') ;
+    }
     //-------------------------------------------------------------------------------
     var globalHook = 'logger';
     var defaultGlobalLevel = 'debug';
     //-------------------------------------------------------------------------------
+    
 
     var globalLevel;
-    var enabled = localStorage.getItem('loggerEnabled');
     
+    if (typeof localStorage === 'undefined') localStorage = {
+        setItem: function(key, value) { settings[key] = value;},
+        getItem: function(key) { return settings[key]; },
+        removeItem: function(key) { delete settings[key]; } };
+    
+    var enabled;
+    
+    var matchLine = new RegExp('^.*:([0-9]+):[0-9]+\\)$');
+
     function addHooks() {
         enabled = true;
+        if (inNode) {
+            __line = function() {
+                try {
+                    throw new Error() 
+                } catch(e) { var line = e.stack.split('\n')[4];
+                             // console.log('"' + line + '"')
+                             return matchLine.exec(line)[1];
+                           } 
+            } 
+            return;   
+        }
         Object.defineProperty(window, '__stack', {
             get: function(){
                 var orig = Error.prepareStackTrace;
@@ -33,7 +61,6 @@
             },
             configurable: true
         });
-
     }
 
     function removeHooks() {
@@ -74,14 +101,16 @@
         if (!maxLevel) return;
         var funName = args.callee.caller.name || 'anon';
         args = Array.prototype.slice.call(args);
-        var timeStampStr =  loggers._showTimeStamp ? '(' + timeStamp() + ')' : '';
         name = name ? name + ' ' : '';
-        var out = ['%c' + name +  funName + ':' + __line + '>', 'color:grey;'];
+        var out = inNode?
+            [(name +  funName + '():' + __line() + '>').grey] :
+            ['%c' + name +  funName + '():' + __line + '>', 'color:grey;'];
         out = out.concat(args);
+        var timeStampStr =  loggers._showTimeStamp ? '(' + timeStamp() + ')' : '';
         var post = '' + timeStampStr ;
         out.push(post);
         if (level <= globalLevel && level <= maxLevel)
-            console[levels[level]].apply(console, out);
+            console[inNode ? 'log' : levels[level]].apply(console, out);
     }
 
     function setLevel(name, level) {
@@ -159,41 +188,64 @@
         }
     }
 
-
-    //executed on load:
-    setGlobalLevel(defaultGlobalLevel);
-    if (enabled) addHooks();
-    
     var loggers = {};
-    loggers = getLogger();
-    loggers._setGlobalLevel = setGlobalLevel;
-    loggers._off = function() {
-        this._state = 'off';
-        localStorage.removeItem('loggerEnabled');
-        removeHooks();   
-        console.log('Please refresh the page.');
+    //executed on load:
+    function config() {
+        setGlobalLevel(defaultGlobalLevel);
+        enabled = localStorage.getItem('loggerEnabled');
+        if (enabled) addHooks();
+        loggers = getLogger();
+        loggers._setGlobalLevel = setGlobalLevel;
+        loggers._off = function() {
+            this._state = 'off';
+            localStorage.removeItem('loggerEnabled');
+            removeHooks();   
+            console.log('Please refresh the page.');
+        }
+    
+        loggers._on = function() {
+            this._state = 'on'
+            if (localStorage.getItem('loggerEnabled')) return;
+            localStorage.setItem('loggerEnabled', 'true');
+            addHooks();   
+            console.log('Please refresh the page.');
+        }
+    
+        loggers._state = enabled ? 'on' : 'off';
+        loggers._create = getLogger;
+        loggers._showTimeStamp = true;
+        loggers._enum = function() {
+            console.log('default' + '(' + getMaxLevel('') + ')');
+            this._list().forEach(function(k) {
+                console.log(k + ' (' + getMaxLevel(k) + ')',
+                            loggers[k]._list().map(function(s) {
+                                return s + ' (' + getMaxLevel(k + '[' + s + ']') + ')'
+                            }));
+            })
+        }
+        loggers._help = function() {
+            console.log(Object.keys(loggers));
+        }
     }
-    loggers._on = function() {
-        this._state = 'on'
-        localStorage.setItem('loggerEnabled', 'true');
-        addHooks();   
-        console.log('Please refresh the page.');
+    
+    
+    if (inNode) {
+        module.exports = {
+            config: function(someSettings) {
+                settings = {};
+                Object.keys(someSettings).forEach(function(k) {
+                    if (k === '_on') settings.loggerEnabled = true;
+                    else settings['__logger__' + k] = someSettings[k];
+                });
+                config();
+                this.logger = loggers;
+            }
+        } 
     }
-    loggers._state = enabled ? 'on' : 'off';
-    loggers._create = getLogger;
-    loggers._showTimeStamp = true;
-    loggers._enum = function() {
-        console.log('default' + '(' + getMaxLevel('') + ')');
-        this._list().forEach(function(k) {
-            console.log(k + ' (' + getMaxLevel(k) + ')',
-                        loggers[k]._list().map(function(s) {
-                            return s + ' (' + getMaxLevel(k + '[' + s + ']') + ')'
-                        }));
-        })
+    else {
+        config();
+        global[globalHook] = loggers;   
     }
-    global[globalHook] = loggers;
-
-
 
     //freely copied from https://github.com/visionmedia/debug/blob/master/dist/debug.js
     var s = 1000;
