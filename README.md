@@ -5,6 +5,18 @@ A little namespaced logging utility for node and the browser.
 
 In the browser the state of loggers gets persisted in localStorage.
 
+Some inspiration was taken from
+[https://github.com/visionmedia/debug](https://github.com/visionmedia/debug),
+mainly the idea of storing state of a debugger in localStorage.
+
+The idea is that by default all log output is silent and has minimal impact on
+the app. All log calls are reduced to empty noop calls. In production all log
+calls are automatically silenced. To debug the app, turn the appropriate set of
+debug or log calls on, and turn them off again when working on different section
+of code. All log statements are prefixed with their namespace, the name of the
+function the call was made from, and its line number in the source file for easy
+tracking of the position of the log call in the source code.
+
 In node the state of loggers is passed in as a config json (or use a nodejs repl
 perhaps?)
 

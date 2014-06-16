@@ -8,7 +8,7 @@
         var util = require('util') ;
     }
     //-------------------------------------------------------------------------------
-    var globalHook = 'logger';
+    var globalHook = 'logthis';
     var defaultGlobalLevel = 'debug';
     //-------------------------------------------------------------------------------
     
@@ -91,7 +91,7 @@
     
     var levels = ['none', 'error', 'warn', 'info', 'debug'];
     function getMaxLevel(name) {
-        return localStorage.getItem('__logger__' + name) || 'none';
+        return localStorage.getItem('__logthis__' + name) || 'none';
     }
         
 
@@ -120,7 +120,7 @@
                          level);
             return;
         }
-        localStorage.setItem('__logger__' + name, level);
+        localStorage.setItem('__logthis__' + name, level);
     }
 
     function getLogger(ns, names) {
@@ -235,7 +235,7 @@
                 settings = {};
                 Object.keys(someSettings).forEach(function(k) {
                     if (k === '_on') settings.loggerEnabled = true;
-                    else settings['__logger__' + k] = someSettings[k];
+                    else settings['__logthis__' + k] = someSettings[k];
                 });
                 config();
                 this.logger = loggers;
