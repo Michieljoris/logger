@@ -61,9 +61,10 @@ Enabling a logger is the same as setting the log level to `debug`. Disabling a
 logger is the same as setting the level to `none`. 
 
 The state of any logger gets persisted in localStorage. This means that opening
-your page in a different browser will show no log output till you turn on and
-enable the loggers you're interested in. Or you can do this in your source code,
-however then it's a bit cumbersome to disable all the loggers off again.
+your page in a different browser will show no log output till you turn on
+logthis and enable the loggers you're interested in. Or you can do this in your
+source code, however then it's a bit cumbersome to disable all the loggers off
+again.
 
 By default loggers print out a timestamp, disable the timestamp with:
 
@@ -73,9 +74,9 @@ Or disable the logger alltogether:
 
 	logthis._disable(); //in effect setting a 'none' error level.
 	
-Make a new logger with:
+Make a new namespaced logger with:
 
-    var log = logthis._create('nameOflogthis'); 
+    var log = logthis._create('nameOfLogger); 
 	
 If you create a logger with the same name, you get the same logger again.
 
@@ -84,13 +85,17 @@ and can be enabled and disabled separately from any other loggers.
 
 Enable a name spaced logger with:
 
-	logthis['nameOflogthis']._enable();
+	logthis.nameOfLogger._enable();
+	
+or 
+	
+	log._enable();
 	
 Every logger prints out its name before any output:
 
 	log('And this is the log message.');
 
-	--> (3m)nameOflogthis:108>And this is the log message.
+	--> (3m)nameOfLogger:108>And this is the log message.
 	
 And the line number (108) the log call was made.	
 
@@ -100,15 +105,15 @@ in quick succession (within 2 seconds), then the time stamp is relative to the f
 
 You can namespace further like this:
 
-	var anotherLogger = logthis('nameOfLogger', ['foo']);
+	logthis('nameOfLogger', ['foo']);
 	
 Enable it in the browser:
 	
-	anotherlogthis.foo._enable();
+	log.foo._enable();
 	
 Use the logger:
 
-	anotherlogthis.foo('hello!');
+	log.foo('hello!');
 	
 Use this for example to quickly create a logger for some functions, turn the
 logger off when you're done, but leave the log calls in place, in case they are
@@ -119,12 +124,12 @@ Enumerate all loggers:
 	logthis._enum();
 	
 	--> default (debug) 
-	--> nameOfThelogthis (debug) ["foo (debug)"] 
+	--> nameOfLogger (debug) ["foo (debug)"] 
 	
 Disable or enable all loggers under a namespace:
 
-	logthis['anotherlogthis']._all.enable();
-	Logger['anotherlogthis']._all.disable();
+	logthis.nameOfLogger._all.enable();
+	logthis.nameOfLogger._all.disable();
 	
 This also works for the default logthis:
 
@@ -158,7 +163,7 @@ Example for use on node:
 Output:
 
 	test.js anon():11> hello (+13ms)
-	someNamespace anon():12> hello from log2 (+3ms)
+	some_namespace anon():12> hello from log2 (+3ms)
 	test.js[foo] anon():13> hello from foo (+1ms)
 
 	Process test.js finished
