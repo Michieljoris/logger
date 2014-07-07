@@ -29,12 +29,12 @@
         if (inNode) {
             __line = function() {
                 try {
-                    throw new Error() 
+                    throw new Error();
                 } catch(e) { var line = e.stack.split('\n')[4];
                              // console.log('"' + line + '"')
                              return matchLine.exec(line)[1];
                            } 
-            } 
+            };
             return;   
         }
         Object.defineProperty(window, '__stack', {
@@ -139,7 +139,7 @@
                     logger[name]._enable();
                 });
             }
-        }
+        };
         if (names && names.length){
             names.forEach(function(name) {
                 logger[name] = getLoggerSingle(ns + '[' + name + ']');
@@ -201,15 +201,15 @@
             localStorage.removeItem('loggerEnabled');
             removeHooks();   
             console.log('Please refresh the page.');
-        }
+        };
     
         loggers._on = function() {
-            this._state = 'on'
+            this._state = 'on';
             if (localStorage.getItem('loggerEnabled')) return;
             localStorage.setItem('loggerEnabled', 'true');
             addHooks();   
             console.log('Please refresh the page.');
-        }
+        };
     
         loggers._state = enabled ? 'on' : 'off';
         loggers._create = getLogger;
@@ -219,13 +219,13 @@
             this._list().forEach(function(k) {
                 console.log(k + ' (' + getMaxLevel(k) + ')',
                             loggers[k]._list().map(function(s) {
-                                return s + ' (' + getMaxLevel(k + '[' + s + ']') + ')'
+                                return s + ' (' + getMaxLevel(k + '[' + s + ']') + ')';
                             }));
-            })
-        }
+            });
+        };
         loggers._help = function() {
             console.log(Object.keys(loggers));
-        }
+        };
     }
     
     
@@ -240,7 +240,7 @@
                 config();
                 this.logger = loggers;
             }
-        } 
+        };
     }
     else {
         config();

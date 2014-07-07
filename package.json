@@ -23,7 +23,7 @@
       "url": "http://github.com/michieljoris/logthis/blob/master/LICENSE.txt"
     }
   ],
-  "main": "src/logthis.js",
+  "main": "logthis.js",
   "bin": {},
   "engines": {
     "node": ">= 0.6.x"
@@ -38,5 +38,5 @@
   "scripts": {
     "docs": "node node_modules/.bin/docco src/logthis.js"
   },
-  "version": "0.1.5"
+  "version": "0.1.6"
 }
