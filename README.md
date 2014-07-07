@@ -195,3 +195,5 @@ TODO:
 *  maybe use a node repl?
 * use only _create to make new loggers, not as an second array option, so add
    _create to namespaced loggers as well.
+* clean up and comment source code (maybe doccoh it)
+   

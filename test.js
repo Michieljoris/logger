@@ -1,7 +1,7 @@
 var path = require('path');
 require('./logthis').config({ _on: true, 'test.js': 'debug' ,'test.js[foo]': 'debug'});
 
-var logger = require('./logger').logger;
+var logger = require('./logthis').logger;
 
 var log = logger._create(path.basename(__filename));
 var log2 = logger._create('someNamespace');
