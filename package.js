@@ -30,7 +30,7 @@ module.exports = {
     // We know it is JavaScript for Node.
     "name": "logthis",
     // A single line, or sometimes slightly longer, description of our package.
-    "description": "",
+    "description": "A little namespaced logging utility for node and the browse.",
     // [npm](http://npmjs.org) enforces the X.Y.Z semantic version 
     // scheme that is described at [http://semver.org/](http://semver.org/)
     // and we should follow this versioning for our package.
