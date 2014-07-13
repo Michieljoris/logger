@@ -22,7 +22,7 @@
     
     var enabled;
     
-    var matchLine = new RegExp('^.*:([0-9]+):[0-9]+\\)$');
+    var matchLine = new RegExp('^.*:([0-9]+):[0-9]+\\)?$');
 
     function addHooks() {
         enabled = true;
@@ -31,7 +31,9 @@
                 try {
                     throw new Error();
                 } catch(e) { var line = e.stack.split('\n')[4];
-                             // console.log('"' + line + '"')
+                             // console.log('=--------------');
+                             // console.log(e.stack);
+                             // console.log('"' + line + '"');
                              return matchLine.exec(line)[1];
                            } 
             };
