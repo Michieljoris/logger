@@ -233,6 +233,7 @@
     
     if (inNode) {
         module.exports = {
+            logger: { _create: function() { return function() {} } },
             config: function(someSettings) {
                 settings = {};
                 Object.keys(someSettings).forEach(function(k) {
