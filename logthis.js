@@ -105,7 +105,7 @@
         args = Array.prototype.slice.call(args);
         name = name ? name + ' ' : '';
         var out = inNode?
-            [(name +  funName + '():' + __line() + '>').grey] :
+            [(name +  funName + '():' + __line() + '>').underline.cyan] :
             ['%c' + name +  funName + '():' + __line + '>', 'color:grey;'];
         out = out.concat(args);
         var timeStampStr =  loggers._showTimeStamp ? '(' + timeStamp() + ')' : '';
