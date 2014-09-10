@@ -38,5 +38,5 @@
   "scripts": {
     "docs": "node node_modules/.bin/docco src/logthis.js"
   },
-  "version": "0.1.10"
+  "version": "0.1.11"
 }
