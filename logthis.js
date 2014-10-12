@@ -12,13 +12,13 @@
     var defaultGlobalLevel = 'debug';
     //-------------------------------------------------------------------------------
     
-
     var globalLevel;
-    
-    if (typeof localStorage === 'undefined') localStorage = {
+    var myStorage;
+    if (typeof localStorage === 'undefined') myStorage = {
         setItem: function(key, value) { settings[key] = value;},
         getItem: function(key) { return settings[key]; },
         removeItem: function(key) { delete settings[key]; } };
+    else myStorage = localStorage;
     
     var enabled;
     
@@ -93,7 +93,7 @@
     
     var levels = ['none', 'error', 'warn', 'info', 'debug'];
     function getMaxLevel(name) {
-        return localStorage.getItem('__logthis__' + name) || 'none';
+        return myStorage.getItem('__logthis__' + name) || 'none';
     }
         
 
@@ -122,7 +122,7 @@
                          level);
             return;
         }
-        localStorage.setItem('__logthis__' + name, level);
+        myStorage.setItem('__logthis__' + name, level);
     }
 
     function getLogger(ns, names) {
@@ -194,21 +194,21 @@
     //executed on load:
     function config() {
         setGlobalLevel(defaultGlobalLevel);
-        enabled = localStorage.getItem('loggerEnabled');
+        enabled = myStorage.getItem('loggerEnabled');
         if (enabled) addHooks();
         loggers = getLogger();
         loggers._setGlobalLevel = setGlobalLevel;
         loggers._off = function() {
             this._state = 'off';
-            localStorage.removeItem('loggerEnabled');
+            myStorage.removeItem('loggerEnabled');
             removeHooks();   
             console.log('Please refresh the page.');
         };
     
         loggers._on = function() {
             this._state = 'on';
-            if (localStorage.getItem('loggerEnabled')) return;
-            localStorage.setItem('loggerEnabled', 'true');
+            if (myStorage.getItem('loggerEnabled')) return;
+            myStorage.setItem('loggerEnabled', 'true');
             addHooks();   
             console.log('Please refresh the page.');
         };
